@@ -28,8 +28,8 @@ Please cite our paper if you find our work helpful.
 ```
 @inproceedings{park2025tale,
   title={Temporal Linear Item-Item Model for Sequential Recommendation},
-  author={Seongmin Park* and
-          Mincheol Yoon* and
+  author={Seongmin Park and
+          Mincheol Yoon and
           Minjin Choi and
           Jongwuk Lee},
   booktitle={The 18th ACM International Conference on Web Search and Data Mining (WSDM)},
