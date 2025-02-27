@@ -1,8 +1,8 @@
 c: 0.4
 gamma: 1
-beta: 0.01
+beta: -0.01
 
 tau_train: 0.5
 tau_inf: 2
 
-reg_weight: 100
+reg_weight: 200
