@@ -20,7 +20,7 @@ We will update the complete implementation environments soon.
 
 ## How to run
 ```
-python run_recbole.py --dataset=beauty --model=TALE --reg_weight=100 --tau_train=0.5 --tau_inf=2
+python run_recbole.py --dataset=beauty --model=TALE --reg_weight=200 --tau_train=0.5 --tau_inf=2
 ```
 
 ## Citation
