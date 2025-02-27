@@ -15,7 +15,6 @@ class TALE(SequentialRecommender):
         self.reg_weight = config["reg_weight"]
         self.tau_train = config['tau_train']
         self.tau_inf = config['tau_inf']
-
         self.c = config['c']
         self.beta = config['beta']
         self.gamma = config['gamma']
@@ -49,6 +48,7 @@ class TALE(SequentialRecommender):
         
         self.total_source_items_pop = []
         self.total_source_items = []
+        self.total_target_items_pop = []
         self.total_target_items = []
         self.total_source_weights = []
         
@@ -63,13 +63,14 @@ class TALE(SequentialRecommender):
                 source_item_pop_seq = item_pop_seq[:j+1]
                 target_item = item_seq[j+1]
                 source_time_seq = time_seq[:j+1]
+                target_item_pop = item_pop_seq[j+1]
                 target_time = time_seq[j+1]
                 
                 time_diff = np.abs(source_time_seq - target_time)
                 
                 self.total_source_weights.extend(time_diff)
                 self.total_source_items_pop.extend(source_item_pop_seq)
-                
+                self.total_target_items_pop.append(target_item_pop)
                 self.total_source_items.extend(source_item_seq)
                 self.total_target_items.append(target_item)
                 
@@ -81,12 +82,15 @@ class TALE(SequentialRecommender):
     def make_slit_B(self):
         
         total_source_weights = -np.array(self.total_source_weights)
-        # from IPython import embed; embed()
         weights = np.exp(total_source_weights/self.tau_train)
-        weights += (weights < self.c) * self.c + 1
+        weights[weights<self.c] = self.c
+        
+        source_pop_weights = np.power(np.array(self.total_source_items_pop), self.beta)
+        weights *= source_pop_weights
+        target_pop_weights = np.power(np.array(self.total_target_items_pop), self.beta)
         
         S = coo_matrix((weights, (self.source_seq_idx, self.total_source_items)), shape=(self.idx_count, self.n_items))
-        T = coo_matrix((np.ones([self.idx_count]), (self.target_idx, self.total_target_items)), shape=(self.idx_count, self.n_items))
+        T = coo_matrix((target_pop_weights, (self.target_idx, self.total_target_items)), shape=(self.idx_count, self.n_items))
 
         G = S.T @ S
         K = S.T @ T
